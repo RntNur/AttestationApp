@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container">
+        <div class="card" style="margin-top: 80px; background-color: black;">
+            <div class="card-body">
+                <h3 class="card-title">Избранное</h3>
+                <div class="row">
+                    {% for tour in tours %}
+                        <div class="col-md-3">
+                            <div class="card border mb-3" style="margin-bottom: 30px; background-color: black;">
+                                <div class="card-body mb-3" >
+                                    <a href="{% url 'tour_detail' tour.pk %}">
+                                        {% if tour.photo %}
+                                            <img src="{{ tour.photo.url }}" class="img-fluid mb-1" style="max-height: 200px;">
+                                        {% else %}
+                                            <img src="{% static '/img/Zaglushka 480x240.png' %}" class="img-fluid mb-1" style="max-height: 200px;">
+                                        {% endif %}
+                                    </a>
+                                    <h5 class="card-title"><a href="{% url 'tour_detail' tour.pk  %}">{{ tour.name }}</a></h5>
+                                    <p class="card-text">{{ tour.price }}$</p>
+                                    </div>
+                                </div>
+                             </div>
+                    {% empty %}
+                    <li>Нет туров в избранном
+
+                {% endfor %}
+                </li>
+
+            </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

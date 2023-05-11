@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+    <title>Страница в разработке</title>
+{% block content %}
+    <style>
+
+        .container {
+            margin-top: 100px;
+            text-align: center;
+        }
+        img {
+            width: 200px;
+        }
+        h1, p {
+            margin: 20px 0;
+        }
+    </style>
+
+    <div class="container">
+        <img src="/static/img/v-razrabotke.jpg" alt="Изображение">
+        <h1>Раздел находится в разработке</h1>
+        <p>Мы работаем над этим разделом. Спасибо за терпение!</p>
+    </div>
+{% endblock %}

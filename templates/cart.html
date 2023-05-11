@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="card" style="margin-top: 80px; background-color: dimgrey;">
+                    <div class="card-header">
+                        <h3 class="card-title" style="color: white;">Корзина</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr style="color: white;">
+                                    <th>Продукт</th>
+                                    <th>Цена</th>
+                                    <th>Количество</th>
+                                    <th>Итого</th>
+                                    <th>Действие</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in cart %}
+                                <tr style="color: white;">
+                                    <td> <img src="{{ item.product.photo.url }}" style="max-width: 100px; max-height: 100px;">  {{ item.product.name }}</td>
+                                    <td>{{ item.product.price }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.total_price }}</td>
+                                    <td>
+                                        <form method="post" action="{% url 'cart_remove' item.product.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-outline-danger">Х</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="5" style="color: white;">Ваша корзина пуста.</td>
+                                </tr>
+                            {% endfor %}
+                                <tr style="color: white;">
+                                    <td colspan="4">Общая стоимость:</td>
+                                    <td>{{ cart.get_total_price }}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="text-center">
+            <a class="btn btn-outline-success" href="{% url 'tour_list' %}" style="margin-left: 20px; margin-top: 20px;">Посмотреть ещё туры</a>
+            <a class="btn btn-outline-warning" href="{% url 'cart_remove_all' %}" style="margin-left: 20px; margin-top: 20px;">Очистить корзину</a>
+            <a class="btn btn-outline-light" href="{% url 'order' %}" style="margin-left: 20px; margin-top: 20px;">Оформить заказ</a>
+        </div>
+{% endblock %}

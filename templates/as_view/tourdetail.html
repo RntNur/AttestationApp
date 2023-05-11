@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% load my_tags %}
+
+
+{% block content %}
+<section id="hero" class="hero d-flex flex-column justify-content-center align-items-center" data-aos="fade" data-aos-delay="1500" style="padding-top: 100px;background-image: url('/static/img/background-2.jpeg');">
+
+    <div class="container" >
+
+        <div class="card-body">
+            {% csrf_token %}
+            <h1>Категория "{{ tour_info.category.name }}": {{ tour_info.name }}</h1>
+            <div class="container">
+                <style>
+                    .swiper-container {
+                        max-height: 400px;
+                        width: 100%;
+                        overflow: hidden;
+                    }
+                    .swiper-slide {
+                        height: 100%;
+                        width: calc(100% / 3);
+                    }
+                    .swiper-slide img {
+                        height: 100%;
+                        width: 100%;
+                        object-fit: cover;
+                    }
+
+                </style>
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        {% if tour_info.photo %}
+                            <div class="swiper-slide">
+                                <img src="{{ tour_info.photo.url }}" style="max-height: 400px;" class="img-fluid glightbox" data-gallery="slider-gallery" alt="">
+                            </div>
+                        {% else %}
+                            <div class="swiper-slide">
+                                <img src="{% static '/img/Zaglushka 480x240.png' %}" style="max-height: 400px;">
+                            </div>
+                        {% endif %}
+                        {% for image in tour_info.images.all %}
+                            <div class="swiper-slide">
+                                <img src="{{ image.image.url }}" style="max-height: 400px;" class="img-fluid glightbox" data-gallery="slider-gallery" alt="">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="swiper-navigation">
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                    </div>
+                </div>
+                <script>
+                        document.querySelectorAll('.expandable').forEach(img => {
+                            img.addEventListener('click', () => {
+                                // Создаем новый элемент div для показа увеличенной картинки
+                                const expandedImg = document.createElement('div');
+                                expandedImg.classList.add('expanded-img');
+                                // Создаем новый элемент img для отображения увеличенной картинки
+                                const imgElement = document.createElement('img');
+                                imgElement.src = img.src;
+                                expandedImg.appendChild(imgElement);
+                                // Добавляем элемент на страницу
+                                document.body.appendChild(expandedImg);
+                                // Обработчик события клика на увеличенную картинку
+                                expandedImg.addEventListener('click', () => {
+                                    document.body.removeChild(expandedImg);
+                                });
+                            });
+                        });
+                </script>
+                <script>
+                    const swiper = new Swiper('.swiper-container', {
+                        slidesPerView: 3,
+                        spaceBetween: 20,
+                        navigation: {
+                            nextEl: '.swiper-button-next',
+                            prevEl: '.swiper-button-prev',
+                        },
+                        pagination: {
+                            el: '.swiper-pagination',
+                            clickable: true,
+                        },
+                        loop: true,
+                    });
+
+                </script>
+            </div>
+        </div>
+
+
+                <p>Описание: {{ tour_info.description }}</p>
+                <p>Стоимость: {{ tour_info.price }} руб.</p>
+                <p>Дата создания: {{ tour_info.date_create }}</p>
+                <p>Дата изменения: {{ tour_info.date_update }}</p>
+
+                   <form method="post" action="{% url 'cart_add' object.pk %}" id="add-to-cart-form">
+                        {% csrf_token %}
+                        {{ cart_form }}
+                        <button class="btn btn-outline-light" style="margin-left: 20px;" onclick="event.preventDefault(); openModal()">Добавить в корзину</button>
+                   </form>
+
+                    <div class="text-center">
+                    {% if user.is_authenticated %}
+                        <button id="favourite-toggle" class="btn btn-outline-info" type="button">Добавить в избранное</button>
+                        {% with object.is_favourite as isFavourite %}
+
+                        <script>
+                            const favouriteToggle = document.getElementById('favourite-toggle');
+                            const isFavourite = "{{ isFavourite }}";
+
+                            async function updateFavouriteStatus() {
+                                const pk = "{{ object.pk }}";
+                                const response = await fetch(`{% url 'favourite_add' object.pk %}`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRFToken': "{{ csrf_token }}",
+                                    },
+                                });
+
+                                const data = await response.json();
+
+                                if (data.is_favourite) {
+                                    favouriteToggle.textContent = 'Удалить из избранного';
+                                } else {
+                                    favouriteToggle.textContent = 'Добавить в избранное';
+                                }
+                            }
+
+                            favouriteToggle.addEventListener('click', updateFavouriteStatus);
+
+                            // Устанавливаем начальное состояние кнопки
+                            if (isFavourite === "True") {
+                                favouriteToggle.textContent = 'Удалить из избранного';
+                            } else {
+                                favouriteToggle.textContent = 'Добавить в избранное';
+                            }
+                        </script>
+                        {% endwith %}
+
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-primary">Войти, чтобы добавить в избранное</a>
+                    {% endif %}
+
+                {% if user.is_staff %}
+                    <a class="btn btn-outline-warning" style="margin-left: 20px;" href="{% url 'tour_update' object.pk %}">Редактировать</a>
+                {% endif %}
+                <a class="btn btn-outline-danger" style="margin-left: 20px;" href="{% url 'tour_list' %}">Назад</a>
+                 </div>
+    </div>
+
+</section>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addToCartModal" tabindex="-1" aria-labelledby="addToCartModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark"> <!-- класс bg-dark фон модального окна -->
+                <div class="modal-header">
+                    <h5 class="text-white">Перейти в корзину?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <button type="button" class="btn btn-primary" onclick="submitAddToCartForm()">Да</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="addToCartAndCloseModal()">Нет</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Подтверждение удаления тура "{{ tour.name }}"</h1>
+
+  <p>Вы уверены, что хотите удалить этот тур?</p>
+
+  <form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="Удалить">
+    <a href="{% url 'tour_detail' object.pk %}">Отмена</a>
+  </form>
+{% endblock %}
