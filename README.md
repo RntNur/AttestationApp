@@ -2,4 +2,5 @@
 
 # Нажмите на изображения для просмотра демонстрации на YouTube
 
-[![Демонстрация проекта на YouTube](https://img.youtube.com/vi/DH1wI1VXWMs/0.jpg)]([https://youtu.be/EPyCQt_z9bw])
+[![Демонстрация проекта на YouTube](https://img.youtube.com/vi/DH1wI1VXWMs/0.jpg)](https://youtu.be/EPyCQt_z9bw)
+
