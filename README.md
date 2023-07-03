@@ -3,5 +3,6 @@
 
 # Нажмите на изображения для просмотра демонстрации на YouTube
 
-[![Демонстрация проекта на YouTube](https://img.youtube.com/vi/DH1wI1VXWMs/0.jpg)](https://youtu.be/EPyCQt_z9bw)
+[![Watch the video](https://img.youtube.com/vi/EPyCQt_z9bw/maxresdefault.jpg)](https://youtu.be/EPyCQt_z9bw)
+
 
